@@ -1,10 +1,13 @@
 <?php
 
 use App\Exceptions\ConflictException;
+use App\Exceptions\DatabaseException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use App\Traits\RestResponse;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Http\Response;
 
 class BaseController
 {
@@ -24,12 +27,27 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions) {
 
-        $exceptions->reportable(function (ConflictException $exception) {
-            if ($exception instanceof ConflictException) {
-                $code = $exception->getStatusCode();
-                $message = $exception->getMessage();
-                $baseController = new BaseController();
-                return $baseController->error(request()->getPathInfo(), $exception, $message, $code);
+        $exceptions->renderable(function (Throwable $exception, $request) {
+            
+            $baseController = new BaseController();
+
+            if ($exception instanceof ValidationException) {
+                $errors = $exception->validator->errors()->all();
+             
+                return $baseController->error($request->getPathInfo(), $exception,
+                    $errors, Response::HTTP_BAD_REQUEST);
+            }
+
+            if ($exception instanceof DatabaseException) {
+                dd(61515);
             }
         });
+        // $exceptions->reportable(function (ConflictException $exception) {
+        //     if ($exception instanceof ConflictException) {
+        //         $code = $exception->getStatusCode();
+        //         $message = $exception->getMessage();
+        //         $baseController = new BaseController();
+        //         return $baseController->error(request()->getPathInfo(), $exception, $message, $code);
+        //     }
+        // });
     })->create();

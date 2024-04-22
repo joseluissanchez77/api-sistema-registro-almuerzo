@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Exceptions\ConflictException;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CatalogRequest;
 use App\Models\Catalog;
 use App\Repositories\CatalogRepository;
 use App\Traits\RestResponse;
@@ -37,7 +38,7 @@ class CatalogController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(/* CatalogRequest */Request $request)
+    public function store(CatalogRequest $request)
     {
 
         DB::beginTransaction();
@@ -62,20 +63,20 @@ class CatalogController extends Controller
      * @param  \App\Models\Catalog  $catalog
      * @return \Illuminate\Http\Response
      */
-    public function update(/* CatalogRequest */Request $request, Catalog $catalog)
+    public function update(CatalogRequest $request, Catalog $catalog)
     {
         DB::beginTransaction();
         try {
             $catalog->fill($request->all());
 
-        if ($catalog->isClean())
-            return $this->information(__('messages.nochange'));
+            dd($catalog->isClean());
+            if ($catalog->isClean())
+                return $this->information(__('messages.nochange'));
 
-        return $this->success($this->catalogRepository->save($catalog));
+            return $this->success($this->catalogRepository->save($catalog));
         } catch (\Exception $ex) {
             DB::rollBack();
             throw new ConflictException($ex->getMessage());
         }
-        
     }
 }

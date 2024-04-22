@@ -74,7 +74,7 @@ trait RestResponse
         //         'date_time' =>  date('Y-m-d H:i:s.v')
         //     ])));
         // }
-        dd(54);
+        // dd(54);
         return response()->json([
             'timestamps' => date('Y-m-d H:i:s'),
             'path' => $path,
