@@ -1,0 +1,11 @@
+php artisan make:migration create_catalogs_tabla --create=catalogs
+
+php artisan migrate --path=/database/migrations/2024_04_06_060328_create_catalogs_tabla.php
+
+php artisan make:model Catalog
+
+php artisan make:controller Api/CatalogController
+
+php artisan make:exception ConflictException
+php artisan make:exception DatabaseException
+
