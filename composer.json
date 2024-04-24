@@ -8,6 +8,7 @@
         "php": "^8.2",
         "laravel-lang/common": "^6.2",
         "laravel/framework": "^11.0",
+        "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
         "laraveles/spanish": "^1.5"
     },

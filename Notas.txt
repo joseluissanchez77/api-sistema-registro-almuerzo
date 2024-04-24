@@ -5,7 +5,14 @@ php artisan migrate --path=/database/migrations/2024_04_06_060328_create_catalog
 php artisan make:model Catalog
 
 php artisan make:controller Api/CatalogController
+php artisan make:controller Api/AuthController
 
 php artisan make:exception ConflictException
 php artisan make:exception DatabaseException
 
+crear el archivo de rutas 
+php artisan install:api
+
+
+php artisan make:request UserRegisterRequest
+php artisan make:request LoginRequest
