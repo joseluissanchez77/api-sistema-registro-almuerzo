@@ -40,16 +40,24 @@ class AuthController extends Controller
      */
     public function login(LoginRequest $request)
     {
-        if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){ 
+        throw new ConflictException("holls");
+        // if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){ 
+        if(Auth::attempt($request->toArray()) ){ 
             $user = Auth::user(); 
-            $success['token'] =  $user->createToken('MyApp')->plainTextToken; 
-            $success['name'] =  $user->name;
+            
+            $token = $user->createToken('access_token');
+            // $cookie = cookie('cookie_token', $token, 60*24);
+            return $this->information(['Bearer'=>$token,"dataUser"=>$user])/* ->withoutCookie($cookie) */;
+            // $success['token'] =  $user->createToken('MyApp')->plainTextToken; 
+            // $success['name'] =  $user->name;
    
-            return $this->sendResponse($success, 'User login successfully.');
-        } 
-        else{ 
-            return $this->sendError('Unauthorised.', ['error'=>'Unauthorised']);
-        } 
+            // return $this->sendResponse($success, 'User login successfully.');
+        }
+        dd(222);
+        
+        // else{ 
+        //     // return $this->sendError('Unauthorised.', ['error'=>'Unauthorised']);
+        // } 
     }
 
     /**
