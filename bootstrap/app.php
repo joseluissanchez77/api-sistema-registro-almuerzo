@@ -6,6 +6,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use App\Traits\RestResponse;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Http\Response;
 
@@ -31,6 +32,10 @@ return Application::configure(basePath: dirname(__DIR__))
             
             $baseController = new BaseController();
 
+            if ($exception instanceof AuthenticationException) {
+                return $baseController->error($request->getPathInfo(), $exception, __('messages.no-credentials', [], config('app.locale')), Response::HTTP_UNAUTHORIZED);
+            }
+            
             if ($exception instanceof ValidationException) {
                 $errors = $exception->validator->errors()->all();
              

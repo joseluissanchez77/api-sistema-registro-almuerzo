@@ -9,6 +9,7 @@ use App\Http\Requests\UserRegisterRequest;
 use App\Models\User;
 use App\Repositories\AuthRepository;
 use App\Traits\RestResponse;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -40,7 +41,9 @@ class AuthController extends Controller
      */
     public function login(LoginRequest $request)
     {
-        throw new ConflictException("holls");
+
+        if(!Auth::attempt($request->toArray()))
+            throw new AuthenticationException(__('messages.no-credentials'));
         // if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){ 
         if(Auth::attempt($request->toArray()) ){ 
             $user = Auth::user(); 
@@ -53,7 +56,7 @@ class AuthController extends Controller
    
             // return $this->sendResponse($success, 'User login successfully.');
         }
-        dd(222);
+       
         
         // else{ 
         //     // return $this->sendError('Unauthorised.', ['error'=>'Unauthorised']);
@@ -68,6 +71,11 @@ class AuthController extends Controller
      */
     public function logout(Request $request)
     {
+        // $cookie = Cookie::forget('cookie_token');
+        auth()->user()->tokens()->delete();
+        // $request->user()->token()->revoke();
+        return $this->information(__('messages.logout'))/* ->withCookie($cookie) */;
+
     }
 
     /**
