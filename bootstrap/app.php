@@ -9,6 +9,7 @@ use App\Traits\RestResponse;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Http\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class BaseController
 {
@@ -31,6 +32,13 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->renderable(function (Throwable $exception, $request) {
             
             $baseController = new BaseController();
+
+            if ($exception instanceof NotFoundHttpException) {
+                $code = $exception->getStatusCode();
+                // return $this->error($request->getPathInfo(), $exception, $exception->getMessage(), $code);
+                return $baseController->error($request->getPathInfo(), $exception, __('messages.not-found', [], config('app.locale')), $code);
+           
+            }
 
             if ($exception instanceof AuthenticationException) {
                 return $baseController->error($request->getPathInfo(), $exception, __('messages.no-credentials', [], config('app.locale')), Response::HTTP_UNAUTHORIZED);
